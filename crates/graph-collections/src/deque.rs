@@ -32,7 +32,6 @@ use std::collections::VecDeque;
 /// assert_eq!(deque.pop_back(),  Some(3));
 /// assert_eq!(deque.len(), 1);
 /// ```
-#[must_use = "deques do nothing unless you push or pop elements"]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Deque<T> {
     data: VecDeque<T>,
