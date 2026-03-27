@@ -239,3 +239,44 @@ fn works_with_option_type() {
     assert_eq!(s.pop(), Some(None));
     assert_eq!(s.pop(), Some(Some(1)));
 }
+
+// ── Iterator ─────────────────────────────────────────────────────────────────
+
+#[test]
+fn into_iter_lifo_order() {
+    let s = Stack::from(vec![1, 2, 3]);
+    let result: Vec<i32> = s.into_iter().collect();
+    assert_eq!(result, vec![3, 2, 1]);
+}
+
+#[test]
+fn into_iter_exact_size() {
+    let s = Stack::from(vec![1, 2, 3]);
+    let mut iter = s.into_iter();
+    assert_eq!(iter.len(), 3);
+    iter.next();
+    assert_eq!(iter.len(), 2);
+}
+
+#[test]
+fn for_loop_lifo_order() {
+    let s = Stack::from(vec![1, 2, 3]);
+    let mut out = Vec::new();
+    for x in s {
+        out.push(x);
+    }
+    assert_eq!(out, vec![3, 2, 1]);
+}
+
+#[test]
+fn collect_into_stack() {
+    let s: Stack<i32> = (1..=3).collect();
+    assert_eq!(s.len(), 3);
+}
+
+#[test]
+fn into_iter_empty() {
+    let s: Stack<i32> = Stack::new();
+    let result: Vec<i32> = s.into_iter().collect();
+    assert!(result.is_empty());
+}
