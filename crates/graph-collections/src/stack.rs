@@ -1,3 +1,5 @@
+use std::iter::FromIterator;
+
 /// A LIFO stack backed by a [`Vec`].
 ///
 /// Elements are pushed and popped from the top of the stack.
@@ -10,6 +12,7 @@
 /// s.push(1);
 /// s.push(2);
 /// assert_eq!(s.pop(), Some(2));
+/// assert_eq!(s.peek(), Some(&1));
 /// assert_eq!(s.len(), 1);
 /// assert!(!s.is_empty());
 /// ```
@@ -27,6 +30,41 @@ impl<T> Default for Stack<T> {
 impl<T> From<Vec<T>> for Stack<T> {
     fn from(data: Vec<T>) -> Self {
         Self { data }
+    }
+}
+
+impl<T> FromIterator<T> for Stack<T> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        Self {
+            data: Vec::from_iter(iter),
+        }
+    }
+}
+
+/// A consuming iterator over a [`Stack`], yielding elements in LIFO order.
+pub struct IntoIter<T>(Stack<T>);
+
+impl<T> Iterator for IntoIter<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<T> {
+        self.0.pop()
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.0.len();
+        (len, Some(len))
+    }
+}
+
+impl<T> ExactSizeIterator for IntoIter<T> {}
+
+impl<T> IntoIterator for Stack<T> {
+    type Item = T;
+    type IntoIter = IntoIter<T>;
+
+    fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
     }
 }
 
@@ -68,7 +106,6 @@ impl<T> Stack<T> {
     /// assert_eq!(s.pop(), Some(1));
     /// assert_eq!(s.pop(), None);
     /// ```
-    #[must_use]
     pub fn pop(&mut self) -> Option<T> {
         self.data.pop()
     }
