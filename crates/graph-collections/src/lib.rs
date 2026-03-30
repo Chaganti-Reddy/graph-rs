@@ -6,10 +6,12 @@
 
 mod deque;
 mod min_heap;
+mod priority_queue;
 mod queue;
 mod stack;
 
 pub use deque::Deque;
 pub use min_heap::MinHeap;
+pub use priority_queue::PriorityQueue;
 pub use queue::Queue;
 pub use stack::Stack;
