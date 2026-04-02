@@ -213,8 +213,8 @@ fn floyd_warshall_matches_pairwise_dijkstra() {
 fn floyd_warshall_diagonal_is_zero() {
     let (g, _) = clrs_graph();
     let fw = floyd_warshall(&g).unwrap();
-    for i in 0..g.node_count() {
-        assert_eq!(fw[i][i], 0.0);
+    for node in g.nodes() {
+        assert_eq!(fw[node.index()][node.index()], 0.0);
     }
 }
 

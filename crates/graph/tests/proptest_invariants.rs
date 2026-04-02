@@ -182,7 +182,7 @@ proptest! {
         let bfs_dist = bfs(&g, src);
 
         // Every node reachable via BFS must also be reachable via Dijkstra.
-        for (node, _hop) in &bfs_dist {
+        for node in bfs_dist.keys() {
             prop_assert!(
                 dijk.distances.contains_key(node),
                 "BFS reached node {:?} but Dijkstra did not",
@@ -191,7 +191,7 @@ proptest! {
         }
 
         // Every node reachable via Dijkstra must also be reachable via BFS.
-        for (node, _dist) in &dijk.distances {
+        for node in dijk.distances.keys() {
             prop_assert!(
                 bfs_dist.contains_key(node),
                 "Dijkstra reached node {:?} but BFS did not",
@@ -245,11 +245,11 @@ proptest! {
         // Our generated weights are all positive so no negative cycles.
         let dist = floyd_warshall(&g).expect("no negative cycle in positive-weight graph");
 
-        for i in 0..n {
+        for (i, row) in dist.iter().enumerate() {
             prop_assert_eq!(
-                dist[i][i], 0.0,
+                row[i], 0.0,
                 "diagonal dist[{}][{}] = {}, expected 0.0",
-                i, i, dist[i][i]
+                i, i, row[i]
             );
         }
     }
