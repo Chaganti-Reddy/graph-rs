@@ -1,8 +1,15 @@
 [workspace]
 resolver = "2"
 members = [
- "crates/graph-collections",
- ]
+  "crates/graph-collections",
+  "crates/graph-core",
+  "crates/graph-traversal",
+  "crates/graph-shortest-path",
+  "crates/graph-spanning",
+  "crates/graph-flow",
+  "crates/graph-advanced",
+  "crates/graph",
+]
 
 [workspace.package]
 version = "0.1.0"
