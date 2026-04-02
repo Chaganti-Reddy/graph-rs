@@ -69,14 +69,16 @@ jobs:
         run: cargo doc --no-deps --workspace --all-features
 
       - name: Run benchmarks
-        run: cargo bench --all-features 2>&1 | tee bench-output.txt
+        run: cargo bench -p graph 2>&1 | tee bench-output.txt
 
       - name: Assemble site
         run: |
           mkdir -p site
           cp -r target/doc/. site/
-          mkdir -p site/bench
-          cp -r target/criterion/. site/bench/
+          if [ -d target/criterion ]; then
+            mkdir -p site/bench
+            cp -r target/criterion/. site/bench/
+          fi
           cat > site/index.html << 'HTML'
           <!DOCTYPE html>
           <html lang="en">
