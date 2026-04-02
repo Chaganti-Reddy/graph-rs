@@ -1,0 +1,13 @@
+[package]
+name = "graph-advanced"
+description = "Advanced graph algorithms for graph-rs: SCC, Euler paths, Hamiltonian path, TSP"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords   = ["graph", "scc", "euler", "hamiltonian", "algorithms"]
+categories = ["algorithms", "data-structures"]
+readme       = "../../README.md"
+
+[dependencies]
+graph-core = { path = "../graph-core" }
