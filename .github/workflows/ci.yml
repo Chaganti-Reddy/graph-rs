@@ -79,34 +79,7 @@ jobs:
             mkdir -p site/bench
             cp -r target/criterion/. site/bench/
           fi
-          cat > site/index.html << 'HTML'
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>graph-rs</title>
-            <style>
-              body { font-family: system-ui, sans-serif; max-width: 600px;
-                     margin: 4rem auto; padding: 0 1rem; color: #222; }
-              h1   { font-size: 1.6rem; margin-bottom: 0.25rem; }
-              p    { color: #555; margin-top: 0.25rem; }
-              ul   { padding-left: 1.2rem; }
-              li   { margin: 0.5rem 0; }
-              a    { color: #0066cc; text-decoration: none; }
-              a:hover { text-decoration: underline; }
-            </style>
-          </head>
-          <body>
-            <h1>graph-rs</h1>
-            <p>A complete graph algorithm library built from scratch in Rust.</p>
-            <ul>
-              <li><a href="graph/index.html">API Documentation (rustdoc)</a></li>
-              <li><a href="bench/report/index.html">Benchmark Report (Criterion)</a></li>
-            </ul>
-          </body>
-          </html>
-          HTML
+          cp index.html site/index.html
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3

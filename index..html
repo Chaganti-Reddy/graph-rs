@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>graph-rs</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff; --bg2: #f5f5f4; --bg3: #eeede9;
+      --text: #1a1a1a; --text2: #555550; --text3: #888880;
+      --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
+      --info-bg: #e6f1fb; --info-text: #0c447c;
+      --success-bg: #eaf3de; --success-text: #3b6d11;
+      --radius: 8px; --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1b; --bg2: #242423; --bg3: #2c2c2a;
+        --text: #f0ede8; --text2: #a8a49e; --text3: #6b6760;
+        --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.18);
+        --info-bg: #0c447c; --info-text: #b5d4f4;
+        --success-bg: #27500a; --success-text: #c0dd97;
+      }
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .hero { padding: 3rem 0 2rem; border-bottom: 0.5px solid var(--border); }
+    .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 3px 10px; border-radius: 99px; border: 0.5px solid var(--border); color: var(--text2); margin-bottom: 1.25rem; }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #3b6d11; }
+    h1 { font-size: 2rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 1rem; color: var(--text2); max-width: 520px; margin-bottom: 1.75rem; }
+    .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--radius); background: var(--text); color: var(--bg); font-size: 14px; font-weight: 500; text-decoration: none; }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--radius); background: transparent; color: var(--text); font-size: 14px; font-weight: 500; text-decoration: none; border: 0.5px solid var(--border2); }
+    .btn-secondary:hover { background: var(--bg2); }
+    .stats { display: flex; gap: 2rem; margin-top: 1.75rem; padding-top: 1.75rem; border-top: 0.5px solid var(--border); }
+    .stat-val { font-size: 22px; font-weight: 500; line-height: 1; }
+    .stat-lbl { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 10px; padding: 2rem 0; }
+    .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; text-decoration: none; color: inherit; display: block; }
+    .card:hover { border-color: var(--border2); }
+    .card-icon { width: 30px; height: 30px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .icon-docs { background: var(--info-bg); color: var(--info-text); }
+    .icon-bench { background: var(--success-bg); color: var(--success-text); }
+    .card-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+    .card-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+    .section { padding: 2rem 0; border-top: 0.5px solid var(--border); }
+    .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); margin-bottom: 1rem; }
+    .crates { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+    .crate { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
+    .crate-name { font-size: 12px; font-weight: 500; font-family: ui-monospace, monospace; margin-bottom: 3px; }
+    .crate-desc { font-size: 11px; color: var(--text2); line-height: 1.4; }
+
+    .footer { padding: 1.5rem 0; border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .footer-left { font-size: 12px; color: var(--text3); }
+    .footer-links { display: flex; gap: 14px; }
+    .footer-links a { font-size: 12px; color: var(--text2); text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="badge"><span class="badge-dot"></span>v0.1.4 &middot; MIT OR Apache-2.0</div>
+    <h1>graph-rs</h1>
+    <p class="subtitle">A complete graph algorithm library built from scratch in Rust &mdash; 40+ algorithms across 8 crates, zero third-party graph dependencies.</p>
+    <div class="cta">
+      <a class="btn-primary" href="graph/index.html">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="5" height="6" rx="1"/><rect x="9" y="2" width="5" height="3" rx="1"/><rect x="2" y="10" width="12" height="1.2" rx="0.6"/><rect x="2" y="12.8" width="8" height="1.2" rx="0.6"/></svg>
+        API docs
+      </a>
+      <a class="btn-secondary" href="bench/report/index.html">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="8" width="2" height="4" rx="0.5"/><rect x="6" y="5" width="2" height="7" rx="0.5"/><rect x="10" y="3" width="2" height="9" rx="0.5"/></svg>
+        Benchmark report
+      </a>
+      <a class="btn-secondary" href="https://github.com/Chaganti-Reddy/graph-rs">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub ↗
+      </a>
+    </div>
+    <div class="stats">
+      <div><div class="stat-val">8</div><div class="stat-lbl">crates</div></div>
+      <div><div class="stat-val">40+</div><div class="stat-lbl">algorithms</div></div>
+      <div><div class="stat-val">300+</div><div class="stat-lbl">tests</div></div>
+      <div><div class="stat-val">4</div><div class="stat-lbl">benchmarks</div></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <a class="card" href="graph/index.html">
+      <div class="card-icon icon-docs">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h7.5L13 5v9H3V2zm7 0v3h3"/></svg>
+      </div>
+      <div class="card-title">API documentation</div>
+      <div class="card-desc">Full rustdoc for all 8 crates — traits, structs, every public function with examples.</div>
+    </a>
+    <a class="card" href="bench/report/index.html">
+      <div class="card-icon icon-bench">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="8" width="2" height="4" rx="0.5"/><rect x="6" y="5" width="2" height="7" rx="0.5"/><rect x="10" y="3" width="2" height="9" rx="0.5"/></svg>
+      </div>
+      <div class="card-title">Benchmark report</div>
+      <div class="card-desc">Criterion HTML report — BFS, Dijkstra, Kruskal, Floyd-Warshall across graph sizes.</div>
+    </a>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Workspace crates</div>
+    <div class="crates">
+      <div class="crate"><div class="crate-name">graph-collections</div><div class="crate-desc">Stack, Queue, Deque, MinHeap, PriorityQueue, DisjointSet</div></div>
+      <div class="crate"><div class="crate-name">graph-core</div><div class="crate-desc">Graph trait, NodeId, AdjacencyList, AdjacencyMatrix, GraphBuilder</div></div>
+      <div class="crate"><div class="crate-name">graph-traversal</div><div class="crate-desc">DFS, BFS, topo sort, cycle detection, components, bipartite</div></div>
+      <div class="crate"><div class="crate-name">graph-shortest-path</div><div class="crate-desc">Dijkstra, Bellman-Ford, Floyd-Warshall, A*</div></div>
+      <div class="crate"><div class="crate-name">graph-spanning</div><div class="crate-desc">Kruskal, Prim, bridges, articulation points</div></div>
+      <div class="crate"><div class="crate-name">graph-flow</div><div class="crate-desc">Ford-Fulkerson, Edmonds-Karp, min-cut, Hopcroft-Karp</div></div>
+      <div class="crate"><div class="crate-name">graph-advanced</div><div class="crate-desc">Tarjan/Kosaraju SCC, condensation, Euler, Hamiltonian, TSP</div></div>
+      <div class="crate"><div class="crate-name">graph</div><div class="crate-desc">Meta-crate — re-exports everything via <code style="font-size:11px;font-family:ui-monospace,monospace">prelude::*</code></div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-left">graph-rs &middot; built from scratch in Rust</span>
+    <div class="footer-links">
+      <a href="https://github.com/Chaganti-Reddy/graph-rs">GitHub</a>
+      <a href="https://github.com/Chaganti-Reddy/graph-rs/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/Chaganti-Reddy/graph-rs/blob/main/LICENSE-MIT">License</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
