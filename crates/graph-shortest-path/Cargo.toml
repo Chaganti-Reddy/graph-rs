@@ -1,0 +1,15 @@
+[package]
+name = "graph-shortest-path"
+description = "Shortest-path algorithms for graph-rs: Dijkstra, Bellman-Ford, Floyd-Warshall, A*"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords   = ["graph", "dijkstra", "shortest-path", "bellman-ford", "algorithms"]
+categories = ["algorithms", "data-structures"]
+readme       = "../../README.md"
+
+[dependencies]
+graph-collections = { path = "../graph-collections" }
+graph-core        = { path = "../graph-core" }
+ordered-float     = "4"
