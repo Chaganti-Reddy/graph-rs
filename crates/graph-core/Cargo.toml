@@ -1,0 +1,13 @@
+[package]
+name = "graph-core"
+description = "Core graph abstractions for graph-rs: NodeId, EdgeId, Graph trait, AdjacencyList, AdjacencyMatrix"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords   = ["graph", "adjacency-list", "adjacency-matrix", "data-structures", "algorithms"]
+categories = ["data-structures", "algorithms"]
+readme       = "../../README.md"
+
+[dependencies]
+graph-collections = { path = "../graph-collections" }
