@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   check:
-    name: CI Pipeline
+    name: Check (fmt · clippy · test)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,29 +29,92 @@ jobs:
           components: rustfmt, clippy
 
       - name: Format
-        run: cargo fmt --check
+        run: cargo fmt --all -- --check
 
       - name: Clippy
-        run: cargo clippy -- -D warnings
+        run: cargo clippy --all -- -D warnings
 
       - name: Test
-        run: cargo test
+        run: cargo test --all
 
-      - name: Build Doc
+  proptest:
+    name: Proptest (5000 cases)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Proptest stress
+        env:
+          PROPTEST_CASES: 5000
+        run: cargo test -p graph proptest
+
+  docs-and-bench:
+    name: Docs + Benchmarks
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build rustdoc
+        run: cargo doc --no-deps --workspace --all-features
+
+      - name: Run benchmarks
+        run: cargo bench --all-features 2>&1 | tee bench-output.txt
+
+      - name: Assemble site
         run: |
-          cargo doc --no-deps --workspace --all-features
-          echo '<meta http-equiv="refresh" content="0; url=graph_rs/index.html">' > target/doc/index.html
+          mkdir -p site
+          cp -r target/doc/. site/
+          mkdir -p site/bench
+          cp -r target/criterion/. site/bench/
+          cat > site/index.html << 'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>graph-rs</title>
+            <style>
+              body { font-family: system-ui, sans-serif; max-width: 600px;
+                     margin: 4rem auto; padding: 0 1rem; color: #222; }
+              h1   { font-size: 1.6rem; margin-bottom: 0.25rem; }
+              p    { color: #555; margin-top: 0.25rem; }
+              ul   { padding-left: 1.2rem; }
+              li   { margin: 0.5rem 0; }
+              a    { color: #0066cc; text-decoration: none; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>graph-rs</h1>
+            <p>A complete graph algorithm library built from scratch in Rust.</p>
+            <ul>
+              <li><a href="graph/index.html">API Documentation (rustdoc)</a></li>
+              <li><a href="bench/report/index.html">Benchmark Report (Criterion)</a></li>
+            </ul>
+          </body>
+          </html>
+          HTML
 
-      - name: Upload artifact
-        if: github.ref == 'refs/heads/main'
+      - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: target/doc
+          path: site
 
   deploy:
     name: Deploy to GitHub Pages
     if: github.ref == 'refs/heads/main'
-    needs: check
+    needs: docs-and-bench
     runs-on: ubuntu-latest
     environment:
       name: github-pages
