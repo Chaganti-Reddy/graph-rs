@@ -1,0 +1,15 @@
+[package]
+name = "graph-spanning"
+description = "Spanning tree and connectivity algorithms for graph-rs: Kruskal, Prim, bridges, articulation points"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords   = ["graph", "minimum-spanning-tree", "kruskal", "prim", "algorithms"]
+categories = ["algorithms", "data-structures"]
+readme       = "../../README.md"
+
+[dependencies]
+graph-collections = { path = "../graph-collections" }
+graph-core        = { path = "../graph-core" }
+ordered-float     = "4"
