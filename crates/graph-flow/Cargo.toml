@@ -1,0 +1,14 @@
+[package]
+name = "graph-flow"
+description = "Maximum flow and bipartite matching algorithms for graph-rs: Ford-Fulkerson, Edmonds-Karp, min-cut, Hopcroft-Karp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords   = ["graph", "max-flow", "min-cut", "bipartite", "algorithms"]
+categories = ["algorithms", "data-structures"]
+readme       = "../../README.md"
+
+[dependencies]
+graph-collections = { path = "../graph-collections" }
+graph-core        = { path = "../graph-core" }
